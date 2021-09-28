@@ -1,0 +1,255 @@
+^XA
+
+^FX###########################
+^FX########## BOX ############
+^FX###########################
+
+^FX###### BOX LEFT 1 ########
+^FO10,17
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 2 ########
+^FO10,55
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 3 ########
+^FO10,93
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 4 ########
+^FO10,131
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 5 ########
+^FO10,169
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 6 ########
+^FO10,220
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 7 ########
+^FO10,258
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 8 ########
+^FO10,296
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 9 ########
+^FO10,334
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX LEFT 10 ########
+^FO10,372
+^GB 172,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 1 ########
+^FO180,17
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 2 ########
+^FO180,55
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 3 ########
+^FO180,93
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 4 ########
+^FO180,131
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 5 ########
+^FO180,169
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 6 ########
+^FO180,220
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 7 ########
+^FO180,258
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 8 ########
+^FO180,296
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 9 ########
+^FO180,334
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###### BOX RIGHT 10 ########
+^FO180,372
+^GB 560,40,2,B
+^FS
+^CF 0,20
+
+^FX###########################
+^FX########## LABEL ##########
+^FX###########################
+
+^FX###### LABEL LEFT 1 ########
+^FO20,28,
+^CF 0,30
+^FDP.O. No.
+^FS
+
+^FX###### LABEL LEFT 2 ########
+^FO20,68,
+^CF 0,30
+^FDPart Code
+^FS
+
+^FX###### LABEL LEFT 3 ########
+^FO20,106,
+^CF 0,30
+^FDPart Name
+^FS
+
+^FX###### LABEL LEFT 4 ########
+^FO20,143,
+^CF 0,30
+^FDQuantity
+^FS
+
+^FX###### LABEL LEFT 5 ########
+^FO20,183,
+^CF 0,30
+^FDLot No.
+^FS
+
+^FX###### LABEL LEFT 6 ########
+^FO20,233,
+^CF 0,30
+^FDP.O. No.
+^FS
+
+^FX###### LABEL LEFT 7 ########
+^FO20,270,
+^CF 0,30
+^FDPart Code
+^FS
+
+^FX###### LABEL LEFT 8 ########
+^FO20,310,
+^CF 0,30
+^FDPart Name
+^FS
+
+^FX###### LABEL LEFT 9 ########
+^FO20,348,
+^CF 0,30
+^FDQuantity
+^FS
+
+^FX###### LABEL LEFT 10 ########
+^FO20,385,
+^CF 0,30
+^FDLot No.
+^FS
+
+^FX###########################
+^FX########## VALUE ##########
+^FX###########################
+
+^FX##### VALUE 1 ##########
+^FO190,28,
+^CF 0,30
+^FDpono
+^FS
+
+^FX##### VALUE 2 ##########
+^FO190,68,
+^CF 0,30
+^FDpartcode
+^FS
+
+^FX##### VALUE 3 ##########
+^FO190,106,
+^CF 0,30
+^FDpartname
+^FS
+
+^FX##### VALUE 4 ##########
+^FO190,143,
+^CF 0,30
+^FDqty
+^FS
+
+^FX##### VALUE 5 ##########
+^FO190,183,
+^CF 0,30
+^FDlotno
+^FS
+
+^FX##### VALUE 6 ##########
+^FO190,233,
+^CF 0,30
+^FDpono
+^FS
+
+^FX##### VALUE 7 ##########
+^FO190,270,
+^CF 0,30
+^FDpartno
+^FS
+
+^FX###### LABEL LEFT 8 ########
+^FO190,310,
+^CF 0,30
+^FDpartname
+^FS
+
+^FX###### LABEL LEFT 9 ########
+^FO190,348,
+^CF 0,30
+^FDqty
+^FS
+
+^FX###### LABEL LEFT 10 ########
+^FO190,385,
+^CF 0,30
+^FDlotno
+^FS
+
+^XZ

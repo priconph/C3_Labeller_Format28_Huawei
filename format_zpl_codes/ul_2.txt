@@ -1,0 +1,18 @@
+^XA
+
+^FO 1,1
+^GB 1036,332,2,B
+^FS
+^CF 0,20
+
+^FO 1,1
+^GB 1036,142,2,B
+^FS
+^CF 0,20
+
+^FO60,65
+^CF 0,15
+^FDElectrical Rating: 1A, Voltage rating not determined
+^FS
+
+^XZ

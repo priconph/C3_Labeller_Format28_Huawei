@@ -1,0 +1,82 @@
+$zebra_code = "^XA
+
+^FO100,40
+^CF 0,30
+^FD(P) Customer P/N: 14200277
+^FS
+
+^FO100,65
+^BY2
+^BCN, 26, N, N, N
+^FDP14200277
+^FS
+
+^FO100,95
+^CF 0,30";
+
+$PN = "CN121S-056-0003(01)";
+$zebra_code .= "^FD(1P) Manufacture P/N: ".$PN."
+^FS
+
+^FO100,120
+^BY2
+^BCN, 26, N, N, N
+^FD1P".$PN."
+^FS
+
+^FO100,150
+^CF 0,30
+^FD(Q) QTY: 240
+^FS
+
+^FO100,175
+^BY2
+^BCN, 26, N, N, N
+^FDQ240
+^FS
+
+^FO100,205
+^CF 0,30
+^FD(10D) Date Code: 160129
+^FS
+
+^FO100,227
+^BY2
+^BCN, 26, N, N, N
+^FD10D160129
+^FS
+
+^FO100,255
+^CF 0,30
+^FD(4L) Country of Origin : PHILIPPINES
+^FS
+
+^FO100,280
+^BY2
+^BCN, 26, N, N, N
+^FD4LPHILIPPINES
+^FS
+
+^FO100,310
+^CF 0,30
+^FD(1T) LOT No: 1605-001
+^FS
+
+^FO100,335
+^BY2
+^BCN, 26, N, N, N
+^FD1T1605-001
+^FS
+
+^FO100,368
+^CF 0,30
+^FDManufacture: YAMAICHI Electronics
+^FS
+
+^FO100,395
+^CF 0,30
+^FDVendor: YAMAICHI Electronics
+^FS
+
+^XZ
+";
