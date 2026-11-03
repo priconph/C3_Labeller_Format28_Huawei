@@ -6,19 +6,22 @@ class YFYPICS{
 	private $userM ="builder";  //username
 	private $passM = ""; //password
 	private $databaseM = "Ypics_New_YF1"; //database
-	private $db_handleM =""; //handler 
+	private ?PDO $db_handleM = null; //handler 
 	
 	//FUNCTION TO CONNECT TO MALACHI SERVER	
     private function connect_DBM(){
-        $this->db_handleM = mssql_connect($this->serverM,$this->userM,$this->passM);
-            return mssql_select_db($this->databaseM,$this->db_handleM);
+        try {
+            $this->db_handleM = new PDO('sqlsrv:Server=' . $this->serverM . ';Database=' . $this->databaseM . ';CharacterSet=UTF-8;Encrypt=no', $this->userM, $this->passM, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            return true;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
     }
    
     //FUNCTION TO CLOSE MALACHI SERVER
     private function close_DBM(){
-        if(isset($this->db_handleM)){
-            mssql_close($this->db_handleM);
-        }
+        $this->db_handleM = null;
     }
 	
 	/////////////////////////////////PUBLIC FUNCTIONS///////////////////////////////////////////////	
@@ -35,9 +38,12 @@ class YFYPICS{
 			}
 			$SQL .= ";";
 			// return $SQL;
-			$result = mssql_query($SQL);
-			return $result;
-			mssql_free_result($result);
+			try {
+				return $this->db_handleM->query($SQL);
+			} catch (PDOException $e) {
+				error_log($e->getMessage());
+				return false;
+			}
 		}
 		else{
 			$errorMsg = "Database not found, Please contact your administrator";
@@ -59,7 +65,6 @@ class YFYPICS{
 			return $SQL;
 			// $result = mssql_query($SQL);
 			// return $result;
-			// mssql_free_result($result);
 		}
 		else{
 			$errorMsg = "Database not found, Please contact your administrator";

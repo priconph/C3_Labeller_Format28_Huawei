@@ -1,6 +1,11 @@
 <?php
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+date_default_timezone_set('Asia/Manila');
 
-$itemCat 	 = ($_POST['pnSelect']);
+$itemCat 	 = (string)($_POST['pnSelect'] ?? '');
+$itemName = $partName = $partNumber = '';
 
 switch($itemCat){
 	case "0004"	: 
@@ -23,12 +28,9 @@ switch($itemCat){
 		break;
 }
 
-$shipQty	 = ($_POST['shipQty_input']);
-$qty_per_box = ($_POST['maxQty_input']);
-$shipDate = ($_POST['dateMFD_input']);
-
-$num_of_stickers = $shipQty/$qty_per_box;
-$excess = $shipQty%$qty_per_box;
+$shipQty	 = (int)($_POST['shipQty_input'] ?? 0);
+$qty_per_box = (int)($_POST['maxQty_input'] ?? 0);
+$shipDate = (string)($_POST['dateMFD_input'] ?? '');
 
 
 
@@ -115,4 +117,5 @@ for($x=0;$x<$qty_per_box;$x++){
 }
 
 
+header('Content-Type: application/json; charset=utf-8');
 echo json_encode($return);

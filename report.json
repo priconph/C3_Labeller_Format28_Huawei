@@ -1,0 +1,129 @@
+{
+    "php": "8.3.4",
+    "source": "5.3.10",
+    "target": "8.4.27",
+    "mode": "dry-run",
+    "command": "run",
+    "fixes": [],
+    "sql_backticks": {
+        "classes": 0,
+        "queries_changed": 0,
+        "names_quoted": 0,
+        "manual_review": 0,
+        "class_list": []
+    },
+    "findings": [
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 60,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 63,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 73,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 74,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 88,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 115,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 135,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 177,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 177,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 186,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 186,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 187,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 195,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 195,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 196,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        },
+        {
+            "file": "\\\\RAPIDV2\\WWW\\C3_Labeller_Format28_Huawei\\server_side\\format28.php",
+            "line": 211,
+            "sev": "error",
+            "rule": "mysql_*",
+            "msg": "ext/mysql removed in 7.0 -> PDO or mysqli with prepared statements (manual migration)"
+        }
+    ]
+}

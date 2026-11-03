@@ -1,4 +1,17 @@
 <?php
+	ob_start();
+	ini_set('display_errors', '0');
+	ini_set('log_errors', '1');
+	error_reporting(E_ALL);
+	set_exception_handler(function (Throwable $e) {
+		error_log((string)$e);
+		while (ob_get_level() > 0) {
+			ob_end_clean();
+		}
+		http_response_code(500);
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode(array('error' => 'Server error'));
+	});
 	if(is_ajax()) {
 		if(isset($_POST["action"]) && !empty($_POST["action"])) {
 			$action = $_POST["action"];
@@ -77,7 +90,7 @@
 		$array_fields = array('*');
 		$table 	   	= 'tbl_for_format13';
 		$joins 	   	= '';
-		$sql_where 	= 'WHERE pn_ypics = "'.$return['pn2'].'"';
+		$sql_where 	= 'WHERE `pn_ypics` = "'.Training::getInstance()->real_escape_string((string)($return['pn2'] ?? '')).'"';
 		$sql_order 	= 'ORDER BY pkid';
 		$sql_limit 	= '';
 		$result = Training::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
@@ -93,5 +106,3 @@
 		$return['result'] = json_encode($result);
 		echo json_encode($return);
 	}
-
-?>

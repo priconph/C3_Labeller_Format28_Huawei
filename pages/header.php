@@ -1,10 +1,12 @@
 <html>
-<title>C3 Labeller V2 | Packing</title>
+<title>C3 Labeller (Huawei) | Assembly Line</title>
 <?php require_once ('../libraries/includes.php'); ?>
 <?php 
-session_start();
-$username = $_SESSION['username'];
-echo '<input type="hidden" id="hd_username" value="'.$username.'"'; 
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
+$username = $_SESSION['username'] ?? '';
+echo '<input type="hidden" id="hd_username" value="'.htmlspecialchars((string)$username, ENT_QUOTES, 'UTF-8').'"'; 
 
 
 

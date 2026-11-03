@@ -138,7 +138,7 @@ function findPrinter(name,array_label) {
 					printZPL(array_label[x]);
 				}
 			}else{
-				alert('Warning: Zebra Printer Not Found!');
+				alert('Warning: Zebra Printer Not Found!.');
 			}
 			// Remove reference to this function
 			window['qzDoneFinding'] = null;
@@ -204,7 +204,7 @@ function getPath() {
 *   3.  The hyphen/dash autoflows and breaks formatting  
 */
 function fixHTML(html) {
-	return html.replace(/ /g, "&nbsp;").replace(/’/g, "'").replace(/-/g,"&#8209;"); 
+	return html.replace(/ /g, "&nbsp;").replace(/ï¿½/g, "'").replace(/-/g,"&#8209;"); 
 }
 
 /**

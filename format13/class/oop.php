@@ -22,12 +22,12 @@ class Training extends mysqli
 
 	public function __clone()
 	{
-		trigger_error('Clone is not allowed.',E_USER_ERROR);
+		throw new Error('Clone is not allowed.');
 	}
 	
 	public function __wakeup()
 	{
-		trigger_error('Deserializing is not allowed.',E_USER_ERROR);
+		throw new Error('Deserializing is not allowed.');
 	}
 	
 	private function __construct() {
@@ -49,25 +49,28 @@ class Training extends mysqli
 				
 			}
 		}
+		// PHP 8.1+ throws on mysqli errors by default; callers expect false/warnings as in 5.3.
+		mysqli_report(MYSQLI_REPORT_OFF);
 		parent::__construct($server, $username, $password, $db_name);
 		
 		if(mysqli_connect_error())
 		{
-			exit('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+			error_log('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+			exit('Database connection failed.');
 		}
-		parent::set_charset('utf-8');
+		parent::set_charset('utf8mb4');
 	}
 
 	////////////////////////////////////UP TO HERE////////////////////////////////////////
 	
 	////////////////////////////////////PUBLIC FUNCTIONS STARTS HERE//////////////////////////////////////////////
 	public function select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit){
-		$query = "SELECT SQL_CALC_FOUND_ROWS " . implode(", ", $array_fields) . " FROM {$table} {$joins} {$sql_where} {$sql_order} {$sql_limit};";
+		$query = "SELECT " . implode(", ", $array_fields) . " FROM {$table} {$joins} {$sql_where} {$sql_order} {$sql_limit};";
 		return $this->query($query);
 	}
 		
 	public function select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit){
-		$query = "SELECT SQL_CALC_FOUND_ROWS " . implode(", ", $array_fields) . " FROM {$table} {$joins} {$sql_where} {$sql_order} {$sql_limit};";
+		$query = "SELECT " . implode(", ", $array_fields) . " FROM {$table} {$joins} {$sql_where} {$sql_order} {$sql_limit};";
 		return ($query);
 	}
 		
@@ -80,14 +83,16 @@ class Training extends mysqli
 	}
 
 	public function update_query($table,$array_fields,$array_values,$pkid){
+		$pkid = $this->real_escape_string((string)$pkid);
 		$update_array =  $this->create_update_param($array_fields,$array_values);
-		$query 		  = "UPDATE {$table} SET ". implode(",", $update_array) ."WHERE pkid='{$pkid}';";
+		$query 		  = "UPDATE {$table} SET ". implode(",", $update_array) ."WHERE `pkid`='{$pkid}';";
 		$this->query($query);
 		$this->save_logs('2',$query);
 		return "Record has been updated";
 	}
 
 	public function delete_query($table,$pkid){
+		$pkid = $this->real_escape_string((string)$pkid);
 		$query = "DELETE FROM {$table} WHERE `pkid` = '{$pkid}';";
 		$this->query($query);
 		$this->save_logs('3',$query);
@@ -97,7 +102,7 @@ class Training extends mysqli
 	public function add_quotations($array_values){
 		$array_values_r = array();
 		for($i=0;$i<count($array_values);$i++){
-			$array_values_r[$i] = "'".$array_values[$i]."'";
+			$array_values_r[$i] = "'".$this->real_escape_string((string)$array_values[$i])."'";
 		}
 		return $array_values_r;
 	}
@@ -105,14 +110,14 @@ class Training extends mysqli
 	public function create_update_param($array_fields,$array_values){
 		$array_update = array();
 		for($i=0;$i<count($array_fields);$i++){
-			$array_update[$i] = "`".$array_fields[$i]."` = "."'".$array_values[$i]."' ";
+			$array_update[$i] = "`".$array_fields[$i]."` = "."'".$this->real_escape_string((string)$array_values[$i])."' ";
 		}
 		return $array_update;
 	}
 	
 	public function save_logs($type,$query){
 		$date_today = date('Y-m-d H:i:s');
-		$new_query = str_replace("'",'"',$query);
+		$new_query = $this->real_escape_string(str_replace("'",'"',$query));
 		$logs = "INSERT INTO `tbl_logs` (`type_of_query`,`query`,`date`) VALUES('".$type."','".$new_query."','".$date_today."');";
 		$this->query($logs);
 	}
@@ -144,19 +149,23 @@ class YPICS{
 	private $userM ="builder";  //username
 	private $passM = ""; //password
 	private $databaseM = ""; //database
-	private $db_handleM =""; //handler 
+	private ?PDO $db_handleM = null; //handler 
 	
 	//FUNCTION TO CONNECT TO MALACHI SERVER	
     private function connect_DBM(){
-        $this->db_handleM = mssql_connect($this->serverM,$this->userM,$this->passM);
-            return mssql_select_db($this->databaseM,$this->db_handleM);
+        try {
+            $dsn = 'sqlsrv:Server=' . $this->serverM . ($this->databaseM !== '' ? ';Database=' . $this->databaseM : '') . ';CharacterSet=UTF-8;Encrypt=no';
+            $this->db_handleM = new PDO($dsn, $this->userM, $this->passM, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            return true;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
     }
    
     //FUNCTION TO CLOSE MALACHI SERVER
     private function close_DBM(){
-        if(isset($this->db_handleM)){
-            mssql_close($this->db_handleM);
-        }
+        $this->db_handleM = null;
     }
 	
 	/////////////////////////////////PUBLIC FUNCTIONS///////////////////////////////////////////////	
@@ -165,9 +174,12 @@ class YPICS{
 		$db_found = $this->connect_DBM();
 		if($db_found){
 			$SQL = "SELECT * FROM VwProdSchedMaster ORDER BY PONum";
-			$result = mssql_query($SQL);
-			return $result;
-			mssql_free_result($result);
+			try {
+				return $this->db_handleM->query($SQL);
+			} catch (PDOException $e) {
+				error_log($e->getMessage());
+				return false;
+			}
 		}
 		else{
 			$errorMsg = "Database not found, Please contact your administrator";
@@ -176,4 +188,3 @@ class YPICS{
 	}
 
 }
-?>

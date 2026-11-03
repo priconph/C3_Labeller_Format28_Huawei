@@ -12,8 +12,15 @@
 	/* Array of database columns which should be read and sent back to DataTables. Use a space where
 	 * you want to insert a non-database field (for example a counter or static image)
 	 */
-	// error_reporting(E_ALL);
-	// ini_set('display_errors', 1);
+	ob_start();
+	ini_set('display_errors', '0');
+	ini_set('log_errors', '1');
+	error_reporting(E_ALL);
+
+	function h($v)
+	{
+		return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+	}
 
 	$aColumns = array(  'pkid',
 						'pn',
@@ -49,21 +56,29 @@
 	/* 
 	 * MySQL connection
 	 */
-	$gaSql['link'] =  mysql_pconnect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) or
-		die( 'Could not open connection to server' );
+	try {
+	$pdo = new PDO( 'mysql:host='.$gaSql['server'].';dbname='.$gaSql['db'].';charset=utf8mb4', $gaSql['user'], $gaSql['password'], array(
+		PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_EMULATE_PREPARES   => false,
+		PDO::ATTR_STRINGIFY_FETCHES  => true,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+	) );
+	$sOrder = "";
+	$aWhereBind = array();
+	$aLimitBind = array();
+	$sTableSql = preg_match('/^\w+$/', $sTable) ? '`'.$sTable.'`' : $sTable;
 	
-	mysql_select_db( $gaSql['db'], $gaSql['link'] ) or 
-		die( 'Could not select database '. $gaSql['db'] );
+	// Database is selected in the PDO DSN above.
 	
 	
 	/* 
 	 * Paging
 	 */
 	$sLimit = "";
-	if ( isset( $_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1' )
+	if ( isset( $_GET['iDisplayStart'] ) && ($_GET['iDisplayLength'] ?? '') != '-1' )
 	{
-		$sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
-			mysql_real_escape_string( $_GET['iDisplayLength'] );
+		$sLimit = "LIMIT ?, ?";
+		$aLimitBind = array( intval( $_GET['iDisplayStart'] ), intval( $_GET['iDisplayLength'] ?? 0 ) );
 	}
 		
 	/*
@@ -72,12 +87,12 @@
 	if ( isset( $_GET['iSortCol_0'] ) )
 	{
 		$sOrder = "ORDER BY  ";
-		for ( $i=0 ; $i<intval( $_GET['iSortingCols'] ) ; $i++ )
+		for ( $i=0 ; $i<intval( $_GET['iSortingCols'] ?? 0 ) ; $i++ )
 		{
-			if ( $_GET[ 'bSortable_'.intval($_GET['iSortCol_'.$i]) ] == "true" )
+			if ( ( $_GET[ 'bSortable_'.intval($_GET['iSortCol_'.$i] ?? 0) ] ?? '' ) == "true" && isset( $aColumns[ intval( $_GET['iSortCol_'.$i] ?? 0 ) ] ) )
 			{
-				$sOrder .= $aColumns[ intval( $_GET['iSortCol_'.$i] ) ]."
-				 	".mysql_real_escape_string( $_GET['sSortDir_'.$i] ) .", ";
+				$sOrder .= '`'.$aColumns[ intval( $_GET['iSortCol_'.$i] ?? 0 ) ].'`'."
+				 	".(strtolower( (string)( $_GET['sSortDir_'.$i] ?? '' ) ) === 'desc' ? 'DESC' : 'ASC') .", ";
 			}
 		}
 		
@@ -98,13 +113,14 @@
 	 
 	 /* wag gagalawin yung sWhere default to para sa searchbox ng datatables check mo sa baba kung pano gagawin mo :) */
 	$sWhere = "";
-	if ( $_GET['sSearch'] != "" )
+	if ( ($_GET['sSearch'] ?? '') != "" )
 	{
 		$sWhere = "WHERE (";
 		for ( $i=0 ; $i<count($aColumns) ; $i++ )
 		{
 			// if( in_array($aColumns[$i],$array_search) ){
-			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_GET['sSearch'] )."%' OR ";
+			$sWhere .= '`'.$aColumns[$i]."` LIKE ? OR ";
+			$aWhereBind[] = '%'.$_GET['sSearch'].'%';
 			// }
 		}
 		$sWhere = substr_replace( $sWhere, "", -3 );
@@ -114,7 +130,7 @@
 	/* Individual column filtering */
 	for ( $i=0 ; $i<count($aColumns) ; $i++ )
 	{
-		if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
+		if ( ($_GET['bSearchable_'.$i] ?? '') == "true" && ($_GET['sSearch_'.$i] ?? '') != '' )
 		{
 			if ( $sWhere == "" )
 			{
@@ -124,7 +140,8 @@
 			{
 				$sWhere .= " AND ";
 			}
-			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
+			$sWhere .= '`'.$aColumns[$i]."` LIKE ? ";
+			$aWhereBind[] = '%'.$_GET['sSearch_'.$i].'%';
 		}
 	}
 	
@@ -149,32 +166,42 @@
 	 * Get data to display
 	 */
 	$sQuery = "
-		SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
-		FROM   $sTable
+		SELECT `".implode("`, `", $aColumns)."`
+		FROM   $sTableSql
 		$sWhere
 		$sOrder
 		$sLimit
 	";
-	$rResult = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
+	$rResult = $pdo->prepare( $sQuery );
+	foreach ( array_merge( $aWhereBind, $aLimitBind ) as $iBind => $mBind ) {
+		$rResult->bindValue( $iBind + 1, $mBind, is_int( $mBind ) ? PDO::PARAM_INT : PDO::PARAM_STR );
+	}
+	$rResult->execute();
 	
 	// echo "limit: ".$sLimit." : ".$sQuery."<hr>";
 	$query_used = $sQuery;
 	
 	/* Data set length after filtering */
 	$sQuery = "
-		SELECT FOUND_ROWS()
+		SELECT COUNT(*)
+		FROM   $sTableSql
+		$sWhere
 	";
-	$rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
-	$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+	$rResultFilterTotal = $pdo->prepare( $sQuery );
+	foreach ( $aWhereBind as $iBind => $mBind ) {
+		$rResultFilterTotal->bindValue( $iBind + 1, $mBind, PDO::PARAM_STR );
+	}
+	$rResultFilterTotal->execute();
+	$aResultFilterTotal = $rResultFilterTotal->fetch( PDO::FETCH_NUM );
 	$iFilteredTotal = $aResultFilterTotal[0];
 	
 	/* Total data set length */
 	$sQuery = "
-		SELECT COUNT(".$sIndexColumn.")
-		FROM   $sTable
+		SELECT COUNT(`".$sIndexColumn."`)
+		FROM   $sTableSql
 	";
-	$rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
-	$aResultTotal = mysql_fetch_array($rResultTotal);
+	$rResultTotal = $pdo->query( $sQuery );
+	$aResultTotal = $rResultTotal->fetch( PDO::FETCH_NUM );
 	$iTotal = $aResultTotal[0];
 	
 	
@@ -182,26 +209,37 @@
 	 * Output
 	 */
 	$output = array(
-		"sEcho" => intval($_GET['sEcho']),
+		"sEcho" => intval($_GET['sEcho'] ?? 0),
 		"iTotalRecords" => $iTotal,
 		"iTotalDisplayRecords" => $iFilteredTotal,
 		"aaData" => array()
 	);
 
 	
-	while ( $aRow = mysql_fetch_array( $rResult ) )
+	while ( $aRow = $rResult->fetch( PDO::FETCH_ASSOC ) )
 	{
 		$row = array();
 		unset($row);
 		$row[] = '<p class="align-center"><input type="checkbox" id="chk_select"></p>';
-		$row[] = '<input type="hidden" id="hd_pkid" value="'.$aRow['pkid'].'">'.$aRow['pn'];
-		$row[] = $aRow['qty'];
-		$row[] = $aRow['remarks'];
-		$row[] = $aRow['date_encoded'];
+		$row[] = '<input type="hidden" id="hd_pkid" value="'.h($aRow['pkid']).'">'.h($aRow['pn']);
+		$row[] = h($aRow['qty']);
+		$row[] = h($aRow['remarks']);
+		$row[] = h($aRow['date_encoded']);
 				
 		array_push($output['aaData'],$row);
 	}
 	
-	echo json_encode( $output );
-
-?>
+	while ( ob_get_level() > 0 ) {
+		ob_end_clean();
+	}
+	header( 'Content-Type: application/json; charset=utf-8' );
+	echo json_encode( $output, JSON_INVALID_UTF8_SUBSTITUTE );
+} catch ( Throwable $e ) {
+	error_log( (string)$e );
+	while ( ob_get_level() > 0 ) {
+		ob_end_clean();
+	}
+	http_response_code( 500 );
+	header( 'Content-Type: application/json; charset=utf-8' );
+	echo json_encode( array( 'error' => 'Server error' ) );
+}
